@@ -1,5 +1,8 @@
+import Tkinter
+
 import PIL
 import PIL.ImageDraw
+import PIL.ImageTk
 
 import vector
 import vehicle
@@ -13,6 +16,9 @@ EL_WIDTH_HEIGHT = (EL_WIDTH, EL_WIDTH)
 
 TEXT_X_OFF = 2
 TEXT_Y_OFF = 1
+
+WIDTH = 340
+HEIGHT = 280
 
 
 
@@ -48,28 +54,76 @@ def DrawVehicle(vehcl):
     drw.polygon(pts, fill='yellow', outline='red')
 
 
+def TrimCoord(vehcl):
+    if vehcl.xy[0] > WIDTH:
+        vehcl.xy = (0, vehcl.xy[1])
+    elif vehcl.xy[0] < 0:
+        vehcl.xy = (WIDTH, vehcl.xy[1])
+    if vehcl.xy[1] > HEIGHT:
+        vehcl.xy = (vehcl.xy[0], 0)
+    elif vehcl.xy[1] < 0:
+        vehcl.xy[1] = (vehcl.xy[0], HEIGHT)
+
+
+frame_num = 0
+def Update(vehcl):
+    global frame_num
+    frame_num += 1
+
+    # Draw scene.
+    ClearBackBuffer(drw)
+    DrawPath(drw, path_segs)
+    DrawVehicle(vehcl)
+
+    # Save/Present scene.
+    #img.save('img{:04d}.png'.format(frame_num))
+
+    # Update scene.
+    vehcl.Update(1.0 / 30.0)
+    TrimCoord(vehcl)
+
+
+def UpdateCanvas(canvas):
+    canvas.delete('all')
+    img_tk = PIL.ImageTk.PhotoImage(img)
+    canvas.create_image(WIDTH // 2, HEIGHT // 2, image=img_tk)
+    canvas.update()
+    canvas.after(int(1.0 / 30.0 * 100))
+
+
 
 if __name__ == '__main__':
+    # Initialize entities.
     path_segs = [
-            (120,  60),     # 0
-            (220,  60),     # 1
-            (260,  80),     # 2
-            (280, 140),     # 3
-            (260, 200),     # 4
-            (220, 220),     # 5
-            (120, 220),     # 6
-            ( 80, 200),     # 7
-            ( 60, 140),     # 8
-            ( 80,  80),     # 9
+        (120,  60),     # 0
+        (220,  60),     # 1
+        (260,  80),     # 2
+        (280, 140),     # 3
+        (260, 200),     # 4
+        (220, 220),     # 5
+        (120, 220),     # 6
+        ( 80, 200),     # 7
+        ( 60, 140),     # 8
+        ( 80,  80),     # 9
     ]
     vehcl = vehicle.Vehicle()
 
-    img = PIL.Image.new('RGB', (340, 280))
+    # Initialize back-buffer graphics.
+    img = PIL.Image.new('RGB', (WIDTH, 280))
     drw = PIL.ImageDraw.ImageDraw(img)
-    for i in range(NUM_FRAMES):
-        ClearBackBuffer(drw)
-        DrawPath(drw, path_segs)
-        DrawVehicle(vehcl)
-        img.save('img{:04d}.png'.format(i + 1))
-        vehcl.Update(1.0 / 30.0)
+
+    # Initialize window.
+    root = Tkinter.Tk()
+    root.title('Hi')
+    root.wm_geometry("%dx%d+%d+%d" % (WIDTH, HEIGHT, 1000, 100))
+
+    canvas = Tkinter.Canvas(root, width=WIDTH, height=HEIGHT, backgroun='black')
+    canvas.pack()
+
+    # Update scene.
+    while True:
+        Update(vehcl)
+        UpdateCanvas(canvas)
+
+    root.mainloop()
 

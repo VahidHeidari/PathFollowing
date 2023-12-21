@@ -1,0 +1,33 @@
+20231221
+Python Tkinter how to adjust the x,y default 0,0 coordinates
+https://stackoverflow.com/questions/64918341/python-tkinter-how-to-adjust-the-x-y-default-0-0-coordinates
+
+    from tkinter import *
+    root = Tk()
+    root.geometry("1920x1080+0+0")
+    root.mainloop()
+
+
+Python Tkinter save canvas as image using PIL
+https://stackoverflow.com/questions/17915440/python-tkinter-save-canvas-as-image-using-pil
+
+
+Animating an object to move in a circular path in Tkinter
+https://stackoverflow.com/questions/44814297/animating-an-object-to-move-in-a-circular-path-in-tkinter
+
+
+https://acodigo.blogspot.com/2017/03/tkinter-canvas.html
+https://stackoverflow.com/questions/74063977/is-there-an-way-to-show-more-than-2-images-using-the-pil-or-label-function-in-tk
+
+
+_tkinter.TclError: invalid command name ".4302957584"
+https://stackoverflow.com/questions/16059592/tkinter-tclerror-invalid-command-name-4302957584
+When you exit the program, the windows are destroyed. This destruction happens after the event loop notices the application has exited. The way you have your code structured, this happens when you call self.update(). Immediately after that call, and after the widgets have been destroyed, you are calling self.canvas.delete("ball"). Since the widget was destroyed in the previous statement, you get the error.
+
+The reason the error is so cryptic is that Tkinter is just a wrapper around a tcl/tk interpreter. Tk widgets are named with a dot followed by some characters, and widget names are also tcl commands. When you call the delete method of the canvas, Tkinter translates the canvas reference to the internal tk widget name / tcl command. Because the widget has been destroyed, tk doesn't recognize that as a known command and throws an error.
+
+The solution is going to require you to redo your animation logic. You should not have your own animation loop. Instead, you need to use the Tkinter eventloop (mainloop()) as your animation loop. There are a few examples on this site to show you how (for example: https://stackoverflow.com/a/11505034/7432)
+
+
+https://stackoverflow.com/questions/11502879/simple-animation-using-tkinter/11505034#11505034
+
