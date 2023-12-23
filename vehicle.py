@@ -23,6 +23,11 @@ class Vehicle:
             self.xy = (100, 30)
             self.velocity = vector.MultNorm(MAX_SPEED, (100, 15))
 
+        self.clr = (
+            int(random.uniform(0, 256)),
+            int(random.uniform(0, 256)),
+            int(random.uniform(0, 256)),
+        )
         self.idx = 0
 
 

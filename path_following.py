@@ -108,7 +108,7 @@ def DrawVehicle(drw, vehcl):
         vector.Add(vehcl.xy, vel_neg),
         vector.Add(vehcl.xy, vel_orn)
     )
-    drw.polygon(pts, fill='yellow', outline='red')
+    drw.polygon(pts, fill=vehcl.clr, outline='yellow')
 
     if IS_DRAW_HEAD:
         cntr = vector.Add(vehcl.xy, vector.MultNorm(vehicle.FRONT, vehcl.velocity))
