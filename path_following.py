@@ -9,6 +9,8 @@ import vehicle
 
 
 
+NUM_VEHICLES = 5
+
 #IS_DRAW_HEAD = True
 IS_DRAW_HEAD = False
 
@@ -92,9 +94,7 @@ def Update(vehcl, path_segs):
     global frame_num
     frame_num += 1
 
-    # Draw scene.
-    ClearBackBuffer(drw)
-    DrawPath(drw, path_segs)
+    # Draw vehicle.
     DrawVehicle(drw, vehcl)
     DrawVectors(drw, vehcl, path_segs)
 
@@ -130,7 +130,7 @@ if __name__ == '__main__':
         ( 60, 140),     # 8
         ( 80,  80),     # 9
     ]
-    vehcl = vehicle.Vehicle()
+    vehcls = [ vehicle.Vehicle() for i in range(NUM_VEHICLES) ]
 
     # Initialize back-buffer graphics.
     img = PIL.Image.new('RGB', (WIDTH, 280))
@@ -145,8 +145,13 @@ if __name__ == '__main__':
     canvas.pack()
 
     while True:
+        # Draw scene.
+        ClearBackBuffer(drw)
+        DrawPath(drw, path_segs)
+
         # Update scene.
-        Update(vehcl, path_segs)
+        for v in vehcls:
+            Update(v, path_segs)
 
         # Update window.
         try:
