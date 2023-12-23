@@ -9,7 +9,8 @@ import vehicle
 
 
 
-NUM_FRAMES = 30
+IS_DRAW_HEAD = True
+#IS_DRAW_HEAD = False
 
 EL_WIDTH = 12
 EL_WIDTH_HEIGHT = (EL_WIDTH, EL_WIDTH)
@@ -19,6 +20,10 @@ TEXT_Y_OFF = 1
 
 WIDTH = 340
 HEIGHT = 280
+
+HEAD_RAD = 6
+HEAD_OFF = (HEAD_RAD, HEAD_RAD)
+HEAD_OFF_2 = (HEAD_RAD / 2.0, HEAD_RAD / 2.0)
 
 
 
@@ -42,8 +47,10 @@ def DrawPath(drw, path_segments, clr='red'):
 def DrawVehicle(vehcl):
     vel_nrm = vector.Normalize(vehcl.velocity)
     vel_neg = vector.Mult(15, vector.Neg(vel_nrm))
-    vel_ort = vector.Add(vector.Mult( 8, vector.Orth(vel_nrm)), vector.Mult(20, vector.Neg(vel_nrm)))
-    vel_orn = vector.Add(vector.Mult(-8, vector.Orth(vel_nrm)), vector.Mult(20, vector.Neg(vel_nrm)))
+    vel_ngm = vector.Mult(20, vector.Neg(vel_nrm))
+    orth = vector.Orth(vel_nrm)
+    vel_ort = vector.Add(vector.Mult( 8, orth), vel_ngm)
+    vel_orn = vector.Add(vector.Mult(-8, orth), vel_ngm)
 
     pts = (
         vehcl.xy,
@@ -52,6 +59,13 @@ def DrawVehicle(vehcl):
         vector.Add(vehcl.xy, vel_orn)
     )
     drw.polygon(pts, fill='yellow', outline='red')
+
+    if IS_DRAW_HEAD:
+        cntr = vector.Add(vehcl.xy, vector.MultNorm(vehicle.FRONT, vehcl.velocity))
+        top = vector.Sub(HEAD_OFF_2, cntr)
+        end = vector.Add(top, HEAD_OFF)
+        drw.line((vehcl.xy, cntr), 'yellow')
+        drw.ellipse((top, end), fill='blue', outline='yellow')
 
 
 def TrimCoord(vehcl):
@@ -62,11 +76,11 @@ def TrimCoord(vehcl):
     if vehcl.xy[1] > HEIGHT:
         vehcl.xy = (vehcl.xy[0], 0)
     elif vehcl.xy[1] < 0:
-        vehcl.xy[1] = (vehcl.xy[0], HEIGHT)
+        vehcl.xy = (vehcl.xy[0], HEIGHT)
 
 
 frame_num = 0
-def Update(vehcl):
+def Update(vehcl, path_segs):
     global frame_num
     frame_num += 1
 
@@ -79,6 +93,7 @@ def Update(vehcl):
     #img.save('img{:04d}.png'.format(frame_num))
 
     # Update scene.
+    vehcl.FollowPath(path_segs)
     vehcl.Update(1.0 / 30.0)
     TrimCoord(vehcl)
 
@@ -122,8 +137,11 @@ if __name__ == '__main__':
 
     # Update scene.
     while True:
-        Update(vehcl)
-        UpdateCanvas(canvas)
+        Update(vehcl, path_segs)
+        try:
+            UpdateCanvas(canvas)
+        except Tkinter.TclError:        # TODO: Solve this exception at exit time!
+            break
 
     root.mainloop()
 

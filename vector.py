@@ -2,6 +2,10 @@ import math
 
 
 
+def Len2(vec):
+    return vec[0] ** 2 + vec[1] ** 2
+
+
 def Len(vec):
     return math.sqrt(vec[0] ** 2 + vec[1] ** 2)
 
@@ -23,6 +27,18 @@ def Add(v1, v2):
     return (v1[0] + v2[0], v1[1] + v2[1])
 
 
+def Sub(v1, v2):
+    return (v2[0] - v1[0], v2[1] - v1[1])
+
+
 def Orth(vec):
     return (-vec[1], vec[0])
+
+
+def MultNorm(amount, vect):
+    return Mult(amount, Normalize(vect))
+
+
+def Dot(v1, v2):
+    return v1[0] * v2[0] + v1[1] * v2[1]
 
