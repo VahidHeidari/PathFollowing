@@ -1,4 +1,5 @@
 import Tkinter
+import random
 
 import PIL
 import PIL.ImageDraw
@@ -9,10 +10,11 @@ import vehicle
 
 
 
-NUM_VEHICLES = 5
+NUM_VEHICLES = 10
 
 #IS_DRAW_HEAD = True
 IS_DRAW_HEAD = False
+
 
 EL_WIDTH        = 12
 EL_WIDTH_HEIGHT = (EL_WIDTH, EL_WIDTH)
@@ -26,6 +28,35 @@ HEIGHT = 280
 HEAD_RAD   = 6
 HEAD_OFF   = (HEAD_RAD, HEAD_RAD)
 HEAD_OFF_2 = (HEAD_RAD / 2.0, HEAD_RAD / 2.0)
+
+
+PATHS = [
+    [
+        (120,  60),     # 0
+        (220,  60),     # 1
+        (260,  80),     # 2
+        (280, 140),     # 3
+        (260, 200),     # 4
+        (220, 220),     # 5
+        (120, 220),     # 6
+        ( 80, 200),     # 7
+        ( 60, 140),     # 8
+        ( 80,  80),     # 9
+    ], [
+        (220,  80),     # 0
+        (260,  60),     # 1
+        (300,  80),     # 2
+        (320, 140),     # 3
+        (320, 200),     # 4
+        (300, 240),     # 5
+        ( 60, 240),     # 6
+        ( 30, 233),     # 7
+        ( 20, 210),     # 8
+        ( 30, 187),     # 9
+        (170, 187),     # 10
+        (200, 160),     # 11
+    ],
+]
 
 
 
@@ -118,18 +149,7 @@ def UpdateCanvas(canvas):
 
 if __name__ == '__main__':
     # Initialize entities.
-    path_segs = [
-        (120,  60),     # 0
-        (220,  60),     # 1
-        (260,  80),     # 2
-        (280, 140),     # 3
-        (260, 200),     # 4
-        (220, 220),     # 5
-        (120, 220),     # 6
-        ( 80, 200),     # 7
-        ( 60, 140),     # 8
-        ( 80,  80),     # 9
-    ]
+    path_segs = PATHS[int(random.uniform(0, len(PATHS)))]
     vehcls = [ vehicle.Vehicle() for i in range(NUM_VEHICLES) ]
 
     # Initialize back-buffer graphics.
@@ -138,7 +158,7 @@ if __name__ == '__main__':
 
     # Initialize window.
     root = Tkinter.Tk()
-    root.title('Hi')
+    root.title('Path Following Swarm')
     root.wm_geometry("%dx%d+%d+%d" % (WIDTH, HEIGHT, 1000, 100))
 
     canvas = Tkinter.Canvas(root, width=WIDTH, height=HEIGHT, backgroun='black')
