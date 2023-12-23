@@ -1,4 +1,5 @@
 import Tkinter
+import os
 import random
 
 import PIL
@@ -15,6 +16,8 @@ NUM_VEHICLES = 10
 #IS_DRAW_HEAD = True
 IS_DRAW_HEAD = False
 
+#IS_SAVE_FRAMES = True
+IS_SAVE_FRAMES = False
 
 EL_WIDTH        = 12
 EL_WIDTH_HEIGHT = (EL_WIDTH, EL_WIDTH)
@@ -122,15 +125,9 @@ def TrimCoord(vehcl):
 
 frame_num = 0
 def Update(vehcl, path_segs):
-    global frame_num
-    frame_num += 1
-
     # Draw vehicle.
     DrawVehicle(drw, vehcl)
     DrawVectors(drw, vehcl, path_segs)
-
-    # Save/Present scene.
-    #img.save('img{:04d}.png'.format(frame_num))
 
     # Update scene.
     vehcl.FollowPath(path_segs)
@@ -139,6 +136,12 @@ def Update(vehcl, path_segs):
 
 
 def UpdateCanvas(canvas):
+    # Save/Present scene.
+    if IS_SAVE_FRAMES:
+        global frame_num
+        frame_num += 1
+        img.save(os.path.join('frames', 'frame{:04d}.png'.format(frame_num)))
+
     canvas.delete('all')
     img_tk = PIL.ImageTk.PhotoImage(img)
     canvas.create_image(WIDTH // 2, HEIGHT // 2, image=img_tk)
@@ -148,6 +151,10 @@ def UpdateCanvas(canvas):
 
 
 if __name__ == '__main__':
+    # Create output directory.
+    if IS_SAVE_FRAMES and not os.path.isdir('frames'):
+        os.makedirs('frames')
+
     # Initialize entities.
     path_segs = PATHS[int(random.uniform(0, len(PATHS)))]
     vehcls = [ vehicle.Vehicle() for i in range(NUM_VEHICLES) ]
