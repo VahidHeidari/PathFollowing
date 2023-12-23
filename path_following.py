@@ -12,17 +12,17 @@ import vehicle
 IS_DRAW_HEAD = True
 #IS_DRAW_HEAD = False
 
-EL_WIDTH = 12
+EL_WIDTH        = 12
 EL_WIDTH_HEIGHT = (EL_WIDTH, EL_WIDTH)
 
 TEXT_X_OFF = 2
 TEXT_Y_OFF = 1
 
-WIDTH = 340
+WIDTH  = 340
 HEIGHT = 280
 
-HEAD_RAD = 6
-HEAD_OFF = (HEAD_RAD, HEAD_RAD)
+HEAD_RAD   = 6
+HEAD_OFF   = (HEAD_RAD, HEAD_RAD)
 HEAD_OFF_2 = (HEAD_RAD / 2.0, HEAD_RAD / 2.0)
 
 
@@ -44,7 +44,7 @@ def DrawPath(drw, path_segments, clr='red'):
         drw.text((pt[0] - TEXT_X_OFF, st[1] + TEXT_Y_OFF), str(i), 'white')
 
 
-def DrawVehicle(vehcl):
+def DrawVehicle(drw, vehcl):
     vel_nrm = vector.Normalize(vehcl.velocity)
     vel_neg = vector.Mult(15, vector.Neg(vel_nrm))
     vel_ngm = vector.Mult(20, vector.Neg(vel_nrm))
@@ -68,6 +68,14 @@ def DrawVehicle(vehcl):
         drw.ellipse((top, end), fill='blue', outline='yellow')
 
 
+def DrawVectors(drw, vehcl, path_segs):
+    if not IS_DRAW_HEAD:
+        return
+
+    drw.line((vehcl.xy, path_segs[vehcl.idx]), 'yellow')
+    drw.line((vehcl.xy, path_segs[(vehcl.idx + 1) % len(path_segs)]), 'cyan')
+
+
 def TrimCoord(vehcl):
     if vehcl.xy[0] > WIDTH:
         vehcl.xy = (0, vehcl.xy[1])
@@ -87,7 +95,8 @@ def Update(vehcl, path_segs):
     # Draw scene.
     ClearBackBuffer(drw)
     DrawPath(drw, path_segs)
-    DrawVehicle(vehcl)
+    DrawVehicle(drw, vehcl)
+    DrawVectors(drw, vehcl, path_segs)
 
     # Save/Present scene.
     #img.save('img{:04d}.png'.format(frame_num))
