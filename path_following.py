@@ -52,12 +52,26 @@ PATHS = [
         (320, 140),     # 3
         (320, 200),     # 4
         (300, 240),     # 5
-        ( 60, 240),     # 6
-        ( 30, 233),     # 7
-        ( 20, 210),     # 8
-        ( 30, 187),     # 9
-        (170, 187),     # 10
-        (200, 160),     # 11
+        ( 30, 240),     # 6
+        ( 20, 215),     # 7
+        ( 30, 190),     # 8
+        (170, 190),     # 9
+        (200, 160),     # 10
+    ], [
+        ( 80,  60),     # 0
+        (260,  60),     # 1
+        (300,  80),     # 2
+        (320, 140),     # 3
+        (320, 200),     # 4
+        (300, 240),     # 5
+        ( 30, 240),     # 6
+        ( 20, 210),     # 7
+        ( 30, 180),     # 8
+        (170, 180),     # 9
+        (190, 155),     # 10
+        (170, 130),     # 11
+        ( 80, 130),     # 12
+        ( 60, 100),     # 13
     ],
 ]
 
@@ -157,7 +171,11 @@ if __name__ == '__main__':
 
     # Initialize entities.
     path_segs = PATHS[int(random.uniform(0, len(PATHS)))]
+
     vehcls = [ vehicle.Vehicle() for i in range(NUM_VEHICLES) ]
+    if vehicle.IS_INIT_RANDOM:
+        for v in vehcls:
+            v.FindNearestStartSegment(path_segs)
 
     # Initialize back-buffer graphics.
     img = PIL.Image.new('RGB', (WIDTH, 280))

@@ -26,17 +26,15 @@ class Vehicle:
         self.idx = 0
 
 
-    @staticmethod
-    def FindNearestStartSegment(path_segs):
-        idx = 0
+    def FindNearestStartSegment(self, path_segs):
+        self.idx = 0
         dist = vector.Len2(vector.Sub(self.xy, path_segs[0]))
         NUM_SEGS = len(path_segs)
         for i in range(1, NUM_SEGS):
             d = vector.Len2(vector.Sub(self.xy, path_segs[i]))
             if dist > d:
-                idx = i
+                self.idx = i
                 dist = d
-        return idx
 
 
     def Update(self, dt):
@@ -69,11 +67,11 @@ class Vehicle:
 
         # Projection to segment length
         p = vector.Dot(n, vector.Sub(path_segs[self.idx], f))
-        if abs(p) > vector.Len(s):
+        if p > vector.Len(s):
             self.idx = (self.idx + 1) % NUM_SEGS        # Next Segment
 
         # Path aligned vector
-        v = vector.MultNorm(MAX_SPEED / 2.0, vector.Mult(abs(p), n))
+        v = vector.MultNorm(MAX_SPEED / 5.0, vector.Mult(abs(p), n))
         new_vel = vector.Add(self.velocity, v)
 
         # Path perpendicular vector
