@@ -9,8 +9,8 @@ import vehicle
 
 
 
-IS_DRAW_HEAD = True
-#IS_DRAW_HEAD = False
+#IS_DRAW_HEAD = True
+IS_DRAW_HEAD = False
 
 EL_WIDTH        = 12
 EL_WIDTH_HEIGHT = (EL_WIDTH, EL_WIDTH)
@@ -144,9 +144,11 @@ if __name__ == '__main__':
     canvas = Tkinter.Canvas(root, width=WIDTH, height=HEIGHT, backgroun='black')
     canvas.pack()
 
-    # Update scene.
     while True:
+        # Update scene.
         Update(vehcl, path_segs)
+
+        # Update window.
         try:
             UpdateCanvas(canvas)
         except Tkinter.TclError:        # TODO: Solve this exception at exit time!

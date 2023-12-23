@@ -49,7 +49,7 @@ class Vehicle:
         #              .
         #    (f)      .
         #     ;,,    .
-        #    /|\ '',. p
+        #    /|\ '',. p (o)
         #     |    .
         #     | __.
         #     |  /| (n)
@@ -57,15 +57,30 @@ class Vehicle:
         #     |/
         #    (s)
         #
+
+        # Segment vector
         NUM_SEGS = len(path_segs)
         ed_idx = (self.idx + 1) % NUM_SEGS
         s = vector.Sub(path_segs[self.idx], path_segs[ed_idx])
         n = vector.Normalize(s)
+
+        # Front vector
         f = vector.Add(self.xy, vector.MultNorm(FRONT, self.velocity))
-        p = abs(vector.Dot(n, vector.Sub(path_segs[self.idx], f)))
-        if p > vector.Len(s):
+
+        # Projection to segment length
+        p = vector.Dot(n, vector.Sub(path_segs[self.idx], f))
+        if abs(p) > vector.Len(s):
             self.idx = (self.idx + 1) % NUM_SEGS        # Next Segment
-        v = vector.MultNorm(MAX_SPEED / 2.0, vector.Mult(p, n))
-        new_vel = vector.MultNorm(MAX_SPEED, vector.Add(self.velocity, v))
-        self.velocity = new_vel
+
+        # Path aligned vector
+        v = vector.MultNorm(MAX_SPEED / 2.0, vector.Mult(abs(p), n))
+        new_vel = vector.Add(self.velocity, v)
+
+        # Path perpendicular vector
+        spn = vector.Add(path_segs[self.idx], vector.Mult(p, n))
+        o = vector.Sub(f, spn)
+        ort_vel = vector.Add(new_vel, o)
+
+        # Apply result.
+        self.velocity = vector.MultNorm(MAX_SPEED, ort_vel)
 
