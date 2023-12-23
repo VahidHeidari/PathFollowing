@@ -163,6 +163,29 @@ def UpdateCanvas(canvas):
     canvas.after(int(1.0 / 30.0 * 100))
 
 
+def AppendMirrors(paths):
+    NUM_PATHS = len(paths)
+    VPT = (WIDTH, 0)
+    HPT = (0, HEIGHT)
+    HVPT = (WIDTH, HEIGHT)
+    for i in range(NUM_PATHS):
+        vmirror = []
+        hmirror = []
+        hvmirror = []
+        for j in range(len(paths[i])):
+            vneg_pt = (-paths[i][j][0], paths[i][j][1])
+            vmirror.append(vector.Add(VPT, vneg_pt))
+
+            hneg_pt = (paths[i][j][0], -paths[i][j][1])
+            hmirror.append(vector.Add(HPT, hneg_pt))
+
+            hvneg_pt = vector.Neg(paths[i][j])
+            hvmirror.append(vector.Add(HVPT, hvneg_pt))
+        paths.append(vmirror)
+        paths.append(hmirror)
+        paths.append(hvmirror)
+
+
 
 if __name__ == '__main__':
     # Create output directory.
@@ -170,6 +193,7 @@ if __name__ == '__main__':
         os.makedirs('frames')
 
     # Initialize entities.
+    AppendMirrors(PATHS)
     path_segs = PATHS[int(random.uniform(0, len(PATHS)))]
 
     vehcls = [ vehicle.Vehicle() for i in range(NUM_VEHICLES) ]
