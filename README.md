@@ -15,3 +15,6 @@ repository is an attempt to learn steering beheaviour.
 ![Path 2](Images/Path-2-frame0001.png?raw=true "Path 2")
 ![Path 2](Images/Path-2-frame0828.png?raw=true "Path 2")
 
+![Path 3](Images/Path-3-frame0001.png?raw=true "Path 3")
+![Path 3](Images/Path-3-frame0737.png?raw=true "Path 3")
+
