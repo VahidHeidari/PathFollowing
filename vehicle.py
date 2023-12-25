@@ -14,21 +14,23 @@ IS_INIT_RANDOM = True
 
 class Vehicle:
     def __init__(self):
+        self.idx = 0
+        self.max_speed = MAX_SPEED + random.uniform(-MAX_SPEED / 10.0, MAX_SPEED / 10.0)
+
         if IS_INIT_RANDOM:
             rnd = random.uniform(20, 300), random.uniform(20, 300)
             self.xy = rnd
             rnd = random.uniform(-1, 1), random.uniform(-1, 1)
-            self.velocity = vector.MultNorm(MAX_SPEED, rnd)
+            self.velocity = vector.MultNorm(self.max_speed, rnd)
         else:
             self.xy = (100, 30)
-            self.velocity = vector.MultNorm(MAX_SPEED, (100, 15))
+            self.velocity = vector.MultNorm(self.max_speed, (100, 15))
 
         self.clr = (
             int(random.uniform(0, 256)),
             int(random.uniform(0, 256)),
             int(random.uniform(0, 256)),
         )
-        self.idx = 0
 
 
     def FindNearestStartSegment(self, path_segs):
@@ -76,7 +78,7 @@ class Vehicle:
             self.idx = (self.idx + 1) % NUM_SEGS        # Next Segment
 
         # Path aligned vector
-        v = vector.MultNorm(MAX_SPEED / 5.0, vector.Mult(abs(p), n))
+        v = vector.MultNorm(self.max_speed / 5.0, vector.Mult(abs(p), n))
         new_vel = vector.Add(self.velocity, v)
 
         # Path perpendicular vector
@@ -85,5 +87,5 @@ class Vehicle:
         ort_vel = vector.Add(new_vel, o)
 
         # Apply result.
-        self.velocity = vector.MultNorm(MAX_SPEED, ort_vel)
+        self.velocity = vector.MultNorm(self.max_speed, ort_vel)
 
