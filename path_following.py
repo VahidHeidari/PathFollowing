@@ -205,6 +205,29 @@ def AppendMirrors(paths):
         paths.append(hvmirror)
 
 
+def CalcBoundingBoxs(paths):
+    min_maxs = []
+    for segs in paths:
+        mn_x = min([ s[0] for s in segs ])
+        mx_x = max([ s[0] for s in segs ])
+        mn_y = min([ s[1] for s in segs ])
+        mx_y = max([ s[1] for s in segs ])
+        min_maxs.append((mn_x, mn_y, mx_x, mx_y))
+    return min_maxs
+
+
+def CenterPaths(paths, width, height):
+    cw = width / 2.0
+    ch = height / 2.0
+    min_maxs = CalcBoundingBoxs(paths)
+    for i in range(len(paths)):
+        off_x = cw - ((min_maxs[i][2] - min_maxs[i][0]) / 2.0 + min_maxs[i][0])
+        off_y = ch - ((min_maxs[i][3] - min_maxs[i][1]) / 2.0 + min_maxs[i][1])
+        for j in range(len(paths[i])):
+            p = paths[i][j]
+            paths[i][j] = (p[0] + off_x, p[1] + off_y)
+
+
 
 if __name__ == '__main__':
     # Create output directory.
@@ -212,6 +235,7 @@ if __name__ == '__main__':
         os.makedirs('frames')
 
     # Initialize entities.
+    CenterPaths(PATHS, WIDTH, HEIGHT)
     AppendMirrors(PATHS)
     path_segs = PATHS[int(random.uniform(0, len(PATHS)))]
 
@@ -221,7 +245,7 @@ if __name__ == '__main__':
             v.FindNearestStartSegment(path_segs)
 
     # Initialize back-buffer graphics.
-    img = PIL.Image.new('RGB', (WIDTH, 280))
+    img = PIL.Image.new('RGB', (WIDTH, HEIGHT))
     drw = PIL.ImageDraw.ImageDraw(img)
 
     # Initialize window.
